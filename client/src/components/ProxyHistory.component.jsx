@@ -12,7 +12,6 @@ class ProxyHistory extends Component {
     getItems() {
         UserService.getProxyHistory().then(
             response => {
-                console.log(response.data.data);
                 if (response.data.status == "success") {
                     this.setState({
                         items: response.data.data

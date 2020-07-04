@@ -10,7 +10,6 @@ class ToastAlert extends Component {
         this.state = {
             show: true
         }
-        console.log(this.props.show);
     }
 
     toggle = () => {
@@ -21,24 +20,15 @@ class ToastAlert extends Component {
         let show = this.props.show;
         if (this.state.show == false)
             show = false;
-        return ( <
-            div className = "container fixed-top ml-0"
-            style = {
-                { left: 0 }
-            } >
-            <
-            Toast onClose = { this.toggle }
-            show = { show }
-            delay = { 100000 }
-            autohide >
-            <
-            Toast.Header >
-            <
-            strong className = "mr-auto" > Alert < /strong> < /
-            Toast.Header > <
-            Toast.Body > { this.props.description } < /Toast.Body> < /
-            Toast > <
-            /div>
+        return (
+            <div className="container fixed-top ml-0" style={{ left: 0 }} >
+                <Toast onClose={this.toggle} show={show} delay={100000} autohide >
+                    <Toast.Header >
+                        <strong className="mr-auto" > Alert </strong>
+                    </Toast.Header>
+                    <Toast.Body > {this.props.description} </Toast.Body>
+                </Toast >
+            </div>
         )
     }
 }

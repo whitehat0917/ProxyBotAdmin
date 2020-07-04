@@ -1,6 +1,7 @@
 var AdminModel = require('../models/admin.model');
 var HistoryModel = require('../models/history.model');
 const request = require("request");
+const config = require("../config/auth.config");
 
 exports.allAccess = (req, res) => {
     res.status(200).send("Public Content.");
@@ -24,7 +25,7 @@ exports.getDashboardData = (req, res) => {
                 } else {
                     responseData.price_list = rows;
 
-                    const url = "http://161.35.121.255/api/users/getDashboardData";
+                    const url = "http://" + config.squidAddress + "/api/users/getDashboardData";
                     request.post(url, (error, response, body) => {
                         if (error != null) {
                             res.status(200).send({ status: "error" });
@@ -50,7 +51,7 @@ exports.getDashboardData = (req, res) => {
 };
 
 exports.getAvailableIpList = (req, res) => {
-    const url = "http://161.35.121.255/api/users/showAvailableProxies";
+    const url = "http://" + config.squidAddress + "/api/users/showAvailableProxies";
     request.post(url, (error, response, body) => {
         if (error != null) {
             res.status(200).send({ status: "error" });
@@ -67,7 +68,7 @@ exports.getAvailableIpList = (req, res) => {
 
 exports.addIp = (req, res) => {
     const options = {
-        url: 'http://161.35.121.255/api/users/addIp',
+        url: 'http://' + config.squidAddress + '/api/users/addIp',
         json: true,
         body: {
             startIp: req.body.startIp,
@@ -90,7 +91,7 @@ exports.addIp = (req, res) => {
 
 exports.deleteIp = (req, res) => {
     const options = {
-        url: 'http://161.35.121.255/api/users/deleteIp',
+        url: 'http://' + config.squidAddress + '/api/users/deleteIp',
         json: true,
         body: {
             startIp: req.body.startIp,
@@ -124,7 +125,7 @@ exports.getProxyHistory = (req, res) => {
 
 exports.setMaxIp = (req, res) => {
     const options = {
-        url: 'http://161.35.121.255/api/users/changeMulti',
+        url: 'http://' + config.squidAddress + '/api/users/changeMulti',
         json: true,
         body: {
             count: req.body.count
@@ -148,7 +149,7 @@ exports.setMaxIp = (req, res) => {
 };
 
 exports.getUsedProxy = (req, res) => {
-    const url = "http://161.35.121.255/api/users/showProxies";
+    const url = "http://" + config.squidAddress + "/api/users/showProxies";
     request.post(url, (error, response, body) => {
         if (error != null) {
             res.status(200).send({ status: "error" });
@@ -164,7 +165,7 @@ exports.getUsedProxy = (req, res) => {
 };
 
 exports.getUsers = (req, res) => {
-    const url = "http://161.35.121.255/api/users/getUsers";
+    const url = "http://" + config.squidAddress + "/api/users/getUsers";
     request.post(url, (error, response, body) => {
         if (error != null) {
             res.status(200).send({ status: "error" });
@@ -181,7 +182,7 @@ exports.getUsers = (req, res) => {
 
 exports.getUserProxy = (req, res) => {
     const options = {
-        url: 'http://161.35.121.255/api/users/showUserProxy',
+        url: 'http://' + config.squidAddress + '/api/users/showUserProxy',
         json: true,
         body: {
             id: req.body.userid
@@ -205,7 +206,7 @@ exports.getUserProxy = (req, res) => {
 
 exports.addUserProxy = (req, res) => {
     const options = {
-        url: 'http://161.35.121.255/api/users/setProxy',
+        url: 'http://' + config.squidAddress + '/api/users/setProxy',
         json: true,
         body: {
             userid: req.body.userid,
@@ -232,7 +233,7 @@ exports.addUserProxy = (req, res) => {
 
 exports.editUserProxy = (req, res) => {
     const options = {
-        url: 'http://161.35.121.255/api/users/editProxy',
+        url: 'http://' + config.squidAddress + '/api/users/editProxy',
         json: true,
         body: {
             id: req.body.id,
@@ -258,7 +259,7 @@ exports.editUserProxy = (req, res) => {
 
 exports.deleteUserProxy = (req, res) => {
     const options = {
-        url: 'http://161.35.121.255/api/users/deleteProxy',
+        url: 'http://' + config.squidAddress + '/api/users/deleteProxy',
         json: true,
         body: {
             id: req.body.id,
@@ -282,7 +283,7 @@ exports.deleteUserProxy = (req, res) => {
 
 exports.addUser = (req, res) => {
     const options = {
-        url: 'http://161.35.121.255/api/users/addUser',
+        url: 'http://' + config.squidAddress + '/api/users/addUser',
         json: true,
         body: {
             username: req.body.username,
@@ -307,7 +308,7 @@ exports.addUser = (req, res) => {
 
 exports.deleteUser = (req, res) => {
     const options = {
-        url: 'http://161.35.121.255/api/users/deleteUser',
+        url: 'http://' + config.squidAddress + '/api/users/deleteUser',
         json: true,
         body: {
             userid: req.body.userid
@@ -330,7 +331,7 @@ exports.deleteUser = (req, res) => {
 };
 
 exports.getBlacklist = (req, res) => {
-    const url = "http://161.35.121.255/api/users/showBlacklist";
+    const url = "http://" + config.squidAddress + "/api/users/showBlacklist";
     request.post(url, (error, response, body) => {
         if (error != null) {
             res.status(200).send({ status: "error" });
@@ -350,7 +351,7 @@ exports.getBlacklist = (req, res) => {
 
 exports.addBlacklist = (req, res) => {
     const options = {
-        url: 'http://161.35.121.255/api/users/addBlacklist',
+        url: 'http://' + config.squidAddress + '/api/users/addBlacklist',
         json: true,
         body: {
             url: req.body.url
@@ -374,7 +375,7 @@ exports.addBlacklist = (req, res) => {
 
 exports.editBlacklist = (req, res) => {
     const options = {
-        url: 'http://161.35.121.255/api/users/editBlacklist',
+        url: 'http://' + config.squidAddress + '/api/users/editBlacklist',
         json: true,
         body: {
             id: req.body.id,
@@ -399,7 +400,7 @@ exports.editBlacklist = (req, res) => {
 
 exports.deleteBlacklist = (req, res) => {
     const options = {
-        url: 'http://161.35.121.255/api/users/deleteBlacklist',
+        url: 'http://' + config.squidAddress + '/api/users/deleteBlacklist',
         json: true,
         body: {
             url: req.body.url

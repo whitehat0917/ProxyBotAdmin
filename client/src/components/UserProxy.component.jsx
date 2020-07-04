@@ -1,23 +1,28 @@
 import React, { Component } from 'react'
 import { Container, Row, Col } from 'reactstrap'
-import ModalForm from './Modals/BlacklistModal'
-import DataTable from './Tables/BlacklistDataTable'
+import DataTable from './Tables/UserProxyDataTable'
 import UserService from "../services/user.service"
 import { connect } from 'react-redux'
+import ToastAlert from './Toast/Toast'
+import ModalForm from './Modals/AddProxyModal'
 
-class BlackList extends Component {
-    state = {
-        items: []
+class UserList extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            items: [],
+            toastShow: false
+        }
     }
-
     getItems() {
-        UserService.getBlacklist().then(
+        UserService.getUserProxy(this.props.match.params.id).then(
             response => {
-                console.log(response);
                 if (response.data.status == "success") {
                     this.setState({
                         items: response.data.data
                     });
+                } else {
+                    this.setState({ toastShow: true, alertDescription: response.status })
                 }
             },
             error => {
@@ -32,16 +37,11 @@ class BlackList extends Component {
     }
 
     addItemToState = (item) => {
-        this.getItems();
-        // this.setState(prevState => ({
-        //     items: [...prevState.items, item]
-        // }))
+        this.getItems()
     }
 
     updateState = (item) => {
         const itemIndex = this.state.items.findIndex(data => data.ID === item.ID)
-        console.log(item);
-        console.log(this.state.items[itemIndex]);
         const newArray = [
             // destructure all items from beginning to the indexed item
             ...this.state.items.slice(0, itemIndex),
@@ -50,7 +50,6 @@ class BlackList extends Component {
             // add the rest of the items to the array from the index after the replaced item
             ...this.state.items.slice(itemIndex + 1)
         ]
-        console.log(newArray);
         this.setState({ items: newArray })
     }
 
@@ -65,27 +64,30 @@ class BlackList extends Component {
 
     render() {
         return (
-            <Container className="App">
-                <Row>
-                    <Col>
-                        <h1 style={{ margin: "20px 0" }}>BlackList</h1>
-                    </Col>
-                </Row>
-                <Row className="py-2">
-                    <Col>
-                        <ModalForm buttonLabel="Add Url" addItemToState={this.addItemToState} />
-                    </Col>
-                </Row>
-                <Row>
-                    <Col>
-                        <DataTable items={this.state.items} updateState={this.updateState} deleteItemFromState={this.deleteItemFromState} />
-                    </Col>
-                </Row>
-            </Container>
+            <div>
+                <Container className="App">
+                    <Row>
+                        <Col>
+                            <h1 style={{ margin: "20px 0" }}>User Proxy List</h1>
+                        </Col>
+                    </Row>
+                    <Row className="py-2">
+                        <Col>
+                            <ModalForm buttonLabel="Add Proxy" addItemToState={this.addItemToState} userid={this.props.match.params.id} />
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col>
+                            <DataTable items={this.state.items} updateState={this.updateState} deleteItemFromState={this.deleteItemFromState} userid={this.props.match.params.id} />
+                        </Col>
+                    </Row>
+                </Container>
+                <ToastAlert show={this.state.toastShow} description={this.state.alertDescription}></ToastAlert>
+            </div>
         )
     }
 }
 
 const mapStateToProps = (state) => state.admin;
 
-export default connect(mapStateToProps)(BlackList);
+export default connect(mapStateToProps)(UserList);

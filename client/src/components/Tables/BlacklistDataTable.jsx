@@ -1,32 +1,26 @@
 import React, { Component } from 'react'
 import { Table, Button } from 'reactstrap';
-import ModalForm from '../Modals/BlacklistModal'
+import ModalForm from '../Modals/BlacklistModal';
+import UserService from "../../services/user.service";
 
 class BlacklistDataTable extends Component {
 
     deleteItem = item => {
         let confirmDelete = window.confirm('Delete URL forever?')
         if (confirmDelete) {
-            const user = JSON.parse(localStorage.getItem('user'));
-            fetch('http://localhost:5000/api/test/deleteBlacklist', {
-                method: 'post',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'x-access-token': user.accessToken
-                },
-                body: JSON.stringify({
-                    url: item.URL,
-                })
-            })
-                .then(response => response.json())
-                .then(response => {
-                    if (response.status == "success") {
-                        this.props.deleteItemFromState(item.ID)
+            UserService.deleteBlacklist(item.URL).then(
+                response => {
+                    console.log(response);
+                    if (response.data.status == "success") {
+                        this.props.deleteItemFromState(item.id)
                     } else {
                         console.log('failure')
                     }
-                })
-                .catch(err => console.log(err))
+                },
+                error => {
+                    console.log(error)
+                }
+            );
         }
 
     }

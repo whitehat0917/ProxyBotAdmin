@@ -12,7 +12,6 @@ class UsedProxy extends Component {
     getItems() {
         UserService.getUsedProxy().then(
             response => {
-                console.log(response.data.data);
                 if (response.data.status == "success") {
                     this.setState({
                         items: response.data.data

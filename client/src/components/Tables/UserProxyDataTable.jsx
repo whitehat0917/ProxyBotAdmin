@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Table, Button } from 'reactstrap'
 import ModalForm from '../Modals/AddProxyModal'
+import UserService from "../../services/user.service"
 
 class DataTable extends Component {
     constructor(props) {
@@ -10,26 +11,19 @@ class DataTable extends Component {
     deleteItem = item => {
         let confirmDelete = window.confirm('Delete Proxy forever?')
         if (confirmDelete) {
-            const user = JSON.parse(localStorage.getItem('user'));
-            fetch('http://localhost:5000/api/test/deleteUserProxy', {
-                method: 'post',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'x-access-token': user.accessToken
-                },
-                body: JSON.stringify({
-                    id: item.ID
-                })
-            })
-                .then(response => response.json())
-                .then(response => {
-                    if (response.status == "success") {
+            UserService.deleteUserProxy(item.ID).then(
+                response => {
+                    console.log(response);
+                    if (response.data.status == "success") {
                         this.props.deleteItemFromState(item.ID)
                     } else {
                         console.log('failure')
                     }
-                })
-                .catch(err => console.log(err))
+                },
+                error => {
+                    console.log(error)
+                }
+            );
         }
 
     }

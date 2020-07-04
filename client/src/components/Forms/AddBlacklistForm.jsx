@@ -1,7 +1,8 @@
 import React from 'react';
 import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
 import { connect } from 'react-redux';
-import ToastAlert from '../Toast/Toast'
+import ToastAlert from '../Toast/Toast';
+import UserService from "../../services/user.service";
 
 class AddBlacklistForm extends React.Component {
     state = {
@@ -17,56 +18,40 @@ class AddBlacklistForm extends React.Component {
 
     submitFormAdd = e => {
         e.preventDefault()
-        const user = JSON.parse(localStorage.getItem('user'));
-        fetch('http://localhost:5000/api/test/addBlacklist', {
-            method: 'post',
-            headers: {
-                'Content-Type': 'application/json',
-                'x-access-token': user.accessToken
-            },
-            body: JSON.stringify({
-                url: this.state.URL
-            })
-        })
-            .then(response => response.json())
-            .then(response => {
-                if (response.status == "success") {
+        UserService.addBlacklist(this.state.URL).then(
+            response => {
+                console.log(response);
+                if (response.data.status == "success") {
                     this.props.addItemToState()
                     this.props.toggle()
                 } else {
-                    console.log('failure')
-                    this.setState({ toastShow: true, alertDescription: response.status })
+                    this.setState({ toastShow: true, alertDescription: response.data.status })
                     // this.props.toggle()
                 }
-            })
-            .catch(err => console.log(err))
+            },
+            error => {
+                console.log(error)
+            }
+        );
     }
 
     submitFormEdit = e => {
         e.preventDefault()
-        const user = JSON.parse(localStorage.getItem('user'));
-        fetch('http://localhost:5000/api/test/editBlacklist', {
-            method: 'post',
-            headers: {
-                'Content-Type': 'application/json',
-                'x-access-token': user.accessToken
-            },
-            body: JSON.stringify({
-                id: this.state.ID,
-                url: this.state.URL
-            })
-        })
-            .then(response => response.json())
-            .then(response => {
-                if (response.status == "success") {
+        UserService.editBlacklist(this.state.ID, this.state.URL).then(
+            response => {
+                console.log(response);
+                if (response.data.status == "success") {
                     this.props.updateState({ ID: this.state.ID, URL: this.state.URL, created_at: this.props.item.created_at })
                     this.props.toggle()
                 } else {
-                    console.log('failure')
-                    this.setState({ toastShow: true, alertDescription: response.status })
+                    this.setState({ toastShow: true, alertDescription: response.data.status })
+                    // this.props.toggle()
                 }
-            })
-            .catch(err => console.log(err))
+            },
+            error => {
+                console.log(error)
+            }
+        );
     }
 
     componentDidMount() {

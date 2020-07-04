@@ -1,34 +1,26 @@
 import React, { Component } from 'react'
 import { Table, Button } from 'reactstrap';
-import ModalForm from '../Modals/AvailableIpModal'
+import ModalForm from '../Modals/AvailableIpModal';
+import UserService from "../../services/user.service";
 
 class DataTable extends Component {
 
     deleteItem = item => {
         let confirmDelete = window.confirm('Delete item forever?')
         if (confirmDelete) {
-            const user = JSON.parse(localStorage.getItem('user'));
-            fetch('http://localhost:5000/api/test/deleteIp', {
-                method: 'post',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'x-access-token': user.accessToken
-                },
-                body: JSON.stringify({
-                    startIp: item.IPADDRESS,
-                    count: 1,
-                    subnet: item.SUBNET
-                })
-            })
-                .then(response => response.json())
-                .then(response => {
-                    if (response.status == "success") {
+            UserService.deleteIp(item.IPADDRESS, 1, item.SUBNET).then(
+                response => {
+                    console.log(response);
+                    if (response.data.status == "success") {
                         this.props.deleteItemFromState(item.id)
                     } else {
                         console.log('failure')
                     }
-                })
-                .catch(err => console.log(err))
+                },
+                error => {
+                    console.log(error)
+                }
+            );
         }
 
     }

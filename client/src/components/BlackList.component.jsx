@@ -1,26 +1,22 @@
 import React, { Component } from 'react'
 import { Container, Row, Col } from 'reactstrap'
-import ModalForm from './Modals/AvailableIpModal'
-import MaxModalForm from './Modals/MaxIpModal'
-import DataTable from './Tables/AvailableIpDataTable'
+import ModalForm from './Modals/BlacklistModal'
+import DataTable from './Tables/BlacklistDataTable'
 import UserService from "../services/user.service"
-import { connect } from 'react-redux';
-import { setMultiIp } from '../store/actions'
+import { connect } from 'react-redux'
 
-class AvailableIpList extends Component {
+class BlackList extends Component {
     state = {
         items: []
     }
 
     getItems() {
-        UserService.getAvailableIpList().then(
+        UserService.getBlacklist().then(
             response => {
-                console.log(response);
                 if (response.data.status == "success") {
                     this.setState({
-                        items: response.data.data.data
+                        items: response.data.data
                     });
-                    this.props.dispatch(setMultiIp(response.data.data.mul));
                 }
             },
             error => {
@@ -41,12 +37,8 @@ class AvailableIpList extends Component {
         // }))
     }
 
-    setMaxIpCount = (item) => {
-        this.getItems();
-    }
-
     updateState = (item) => {
-        const itemIndex = this.state.items.findIndex(data => data.id === item.id)
+        const itemIndex = this.state.items.findIndex(data => data.ID === item.ID)
         const newArray = [
             // destructure all items from beginning to the indexed item
             ...this.state.items.slice(0, itemIndex),
@@ -59,9 +51,8 @@ class AvailableIpList extends Component {
     }
 
     deleteItemFromState = (id) => {
-        this.getItems();
-        // const updatedItems = this.state.items.filter(item => item.IPID !== id)
-        // this.setState({ items: updatedItems })
+        const updatedItems = this.state.items.filter(item => item.ID !== id)
+        this.setState({ items: updatedItems })
     }
 
     componentDidMount() {
@@ -73,15 +64,12 @@ class AvailableIpList extends Component {
             <Container className="App">
                 <Row>
                     <Col>
-                        <h1 style={{ margin: "20px 0" }}>Available IP Address List</h1>
+                        <h1 style={{ margin: "20px 0" }}>BlackList</h1>
                     </Col>
                 </Row>
                 <Row className="py-2">
                     <Col>
-                        <ModalForm buttonLabel="Add IP" addItemToState={this.addItemToState} />
-                    </Col>
-                    <Col>
-                        <MaxModalForm buttonLabel="Set Max IP Count" addItemToState={this.setMaxIpCount} />
+                        <ModalForm buttonLabel="Add Url" addItemToState={this.addItemToState} />
                     </Col>
                 </Row>
                 <Row>
@@ -96,4 +84,4 @@ class AvailableIpList extends Component {
 
 const mapStateToProps = (state) => state.admin;
 
-export default connect(mapStateToProps)(AvailableIpList);
+export default connect(mapStateToProps)(BlackList);

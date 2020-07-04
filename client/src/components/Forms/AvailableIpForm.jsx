@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
 import { connect } from 'react-redux';
+import UserService from "../../services/user.service";
 
 class AddEditForm extends React.Component {
     state = {
@@ -16,63 +17,25 @@ class AddEditForm extends React.Component {
 
     submitFormAdd = e => {
         e.preventDefault()
-        const user = JSON.parse(localStorage.getItem('user'));
-        fetch('http://localhost:5000/api/test/addIp', {
-            method: 'post',
-            headers: {
-                'Content-Type': 'application/json',
-                'x-access-token': user.accessToken
-            },
-            body: JSON.stringify({
-                id: this.state.IPID,
-                startIp: this.state.IPADDRESS,
-                count: this.state.count,
-                subnet: this.state.subnet
-            })
-        })
-            .then(response => response.json())
-            .then(response => {
-                console.log("123-" + this.props.multiIp);
-                if (response.status == "success") {
-                    console.log(this.props.multiIp);
+        UserService.addIp(this.state.IPID, this.state.IPADDRESS, this.state.count, this.state.subnet).then(
+            response => {
+                console.log(response);
+                if (response.data.status == "success") {
                     this.props.addItemToState({ IPID: this.state.IPID, IPADDRESS: this.state.IPADDRESS, SUBNET: this.state.subnet, MUL: this.props.multiIp, FREE_IP: this.props.multiIp })
                     this.props.toggle()
                 } else {
-                    console.log('failure')
+                    // this.setState({ toastShow: true, alertDescription: response.data.status })
                     this.props.toggle()
                 }
-            })
-            .catch(err => console.log(err))
+            },
+            error => {
+                console.log(error)
+            }
+        );
     }
 
     submitFormEdit = e => {
         e.preventDefault()
-        fetch('http://localhost:3000/crud', {
-            method: 'put',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                id: this.state.id,
-                first: this.state.first,
-                last: this.state.last,
-                email: this.state.email,
-                phone: this.state.phone,
-                location: this.state.location,
-                hobby: this.state.hobby
-            })
-        })
-            .then(response => response.json())
-            .then(item => {
-                if (Array.isArray(item)) {
-                    // console.log(item[0])
-                    this.props.updateState(item[0])
-                    this.props.toggle()
-                } else {
-                    console.log('failure')
-                }
-            })
-            .catch(err => console.log(err))
     }
 
     componentDidMount() {

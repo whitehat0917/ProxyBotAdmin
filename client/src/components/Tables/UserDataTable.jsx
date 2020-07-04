@@ -1,32 +1,26 @@
 import React, { Component } from 'react';
 import { Table, Button } from 'reactstrap';
 import { Link } from "react-router-dom";
+import UserService from "../../services/user.service";
 
 class DataTable extends Component {
 
     deleteItem = item => {
         let confirmDelete = window.confirm('Delete User forever?')
         if (confirmDelete) {
-            const user = JSON.parse(localStorage.getItem('user'));
-            fetch('http://localhost:5000/api/test/deleteUser', {
-                method: 'post',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'x-access-token': user.accessToken
-                },
-                body: JSON.stringify({
-                    userid: item.USERID
-                })
-            })
-                .then(response => response.json())
-                .then(response => {
-                    if (response.status == "success") {
+            UserService.deleteUser(item.USERID).then(
+                response => {
+                    console.log(response);
+                    if (response.data.status == "success") {
                         this.props.deleteItemFromState(item.USERID)
                     } else {
                         console.log('failure')
                     }
-                })
-                .catch(err => console.log(err))
+                },
+                error => {
+                    console.log(error)
+                }
+            );
         }
 
     }
