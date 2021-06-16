@@ -1,8 +1,8 @@
 const db = {
     host: 'localhost',
     user: 'root',
-    // password: 'elomakaba',
     password: '',
+    // password: 'root',
     database: 'proxy_db'
 };
 

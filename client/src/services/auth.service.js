@@ -1,6 +1,7 @@
 import axios from "axios";
+import { config } from '../config.js';
 
-const API_URL = "http://localhost:5000/api/auth/";
+const API_URL = "http://" + config.serverAddress + "/api/auth/";
 
 class AuthService {
     login(username, password) {

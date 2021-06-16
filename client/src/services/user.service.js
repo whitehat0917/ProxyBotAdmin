@@ -1,7 +1,8 @@
 import axios from 'axios';
 import authHeader from './auth-header';
+import { config } from '../config.js';
 
-const API_URL = 'http://localhost:5000/api/test/';
+const API_URL = 'http://' + config.serverAddress + '/api/test/';
 
 class UserService {
     getDashboardData() {

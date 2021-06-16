@@ -16,37 +16,39 @@ exports.getDashboardData = (req, res) => {
     history = new HistoryModel();
     history.query("select IFNULL(sum(amount), 0) as amount from history", function(err, rows, fields) {
         if (rows.length == 0) {
-            return res.status(200).send({ status: "error" });
+            responseData.total_price = 0;
         } else {
             responseData.total_price = rows[0].amount;
-            history.query('select sum(amount) amount, DATE_FORMAT(created_at,"%b") month from history where DATE_FORMAT(created_at,"%Y") = DATE_FORMAT(NOW(),"%Y") group by DATE_FORMAT(created_at, "%b") order by DATE_FORMAT(created_at, "%m")', function(err, rows, fields) {
-                if (err) {
-                    return res.status(200).send({ status: "error" });
-                } else {
-                    responseData.price_list = rows;
-
-                    const url = "http://" + config.squidAddress + "/api/users/getDashboardData";
-                    request.post(url, (error, response, body) => {
-                        if (error != null) {
-                            res.status(200).send({ status: "error" });
-                            return;
-                        }
-                        if (JSON.parse(body).status == "No error") {
-                            const data = JSON.parse(body).data;
-                            responseData.proxy_count = data.proxy_count;
-                            responseData.user_count = data.user_count;
-                            responseData.ip_count = data.ip_count;
-                        } else {
-                            responseData.proxy_count = 0;
-                            responseData.user_count = 0;
-                            responseData.ip_count = 0;
-                        }
-                        res.status(200).send({ status: "success", data: responseData });
-                        return;
-                    });
-                }
-            });
         }
+        history.query('select sum(amount) amount, DATE_FORMAT(created_at,"%b") month from history where DATE_FORMAT(created_at,"%Y") = DATE_FORMAT(NOW(),"%Y") group by DATE_FORMAT(created_at, "%b") order by DATE_FORMAT(created_at, "%m")', function(err, rows, fields) {
+            if (err) {
+                responseData.price_list = [];
+            } else {
+                responseData.price_list = rows;
+            }
+            const url = "http://" + config.squidAddress + "/api/users/getDashboardData";
+            request.post(url, (error, response, body) => {
+                if (error != null) {
+                    responseData.proxy_count = 0;
+                    responseData.user_count = 0;
+                    responseData.ip_count = 0;
+                    res.status(200).send({ status: "success", data: responseData });
+                    return;
+                }
+                if (JSON.parse(body).status == "No error") {
+                    const data = JSON.parse(body).data;
+                    responseData.proxy_count = data.proxy_count;
+                    responseData.user_count = data.user_count;
+                    responseData.ip_count = data.ip_count;
+                } else {
+                    responseData.proxy_count = 0;
+                    responseData.user_count = 0;
+                    responseData.ip_count = 0;
+                }
+                res.status(200).send({ status: "success", data: responseData });
+                return;
+            });
+        });
     });
 };
 
@@ -175,7 +177,7 @@ exports.getUsers = (req, res) => {
             const data = JSON.parse(body).data;
             res.status(200).send({ status: "success", data: data });
         } else {
-            res.status(200).send({ status: JSON.parse(body).status, data: data });
+            res.status(200).send({ status: JSON.parse(body).status });
         }
     });
 };

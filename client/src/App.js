@@ -18,6 +18,7 @@ import UserList from "./components/UserList.component";
 import UserProxy from "./components/UserProxy.component";
 import BlackList from "./components/BlackList.component";
 import BoardAdmin from "./components/board-admin.component";
+import PrivateRoute from './components/PrivateRoute';
 
 class App extends Component {
     constructor(props) {
@@ -47,7 +48,6 @@ class App extends Component {
 
     render() {
         const { currentUser } = this.state;
-        console.log(currentUser);
         return (
             <Router>
                 <div>
@@ -88,21 +88,23 @@ class App extends Component {
                     </Navbar>
                     <div className="container mt-3">
                         <Switch>
-                            {currentUser ? (
-                                <Route exact path="/" component={Home} />
+                            {/* {currentUser ? (
+                                <Route path="/" component={Home} />
                             ) : (
-                                    <Route exact path="/" component={Home} />
-                                )}
-                            <Route exact path="/home" component={Home} />
+                                    <Route exact path="/" component={Login} />
+                                )} */}
+                            <PrivateRoute path="/home/" component={Home} />
+                            {/* <Route exact path="/home" component={Home} /> */}
                             <Route exact path="/login" component={Login} />
                             <Route exact path="/register" component={Register} />
-                            <Route exact path="/profile" component={Profile} />
-                            <Route exact path="/availableIpList" component={AvailableIpList} />
-                            <Route exact path="/proxyHistory" component={ProxyHistory} />
-                            <Route exact path="/usedProxy" component={UsedProxy} />
-                            <Route exact path="/users" component={UserList} />
-                            <Route exact path="/blacklist" component={BlackList} />
-                            <Route exact path="/userProxy/:id" component={UserProxy}></Route>
+                            <PrivateRoute path="/profile" component={Profile} />
+                            <PrivateRoute path="/availableIpList" component={AvailableIpList} />
+                            <PrivateRoute path="/proxyHistory" component={ProxyHistory} />
+                            <PrivateRoute path="/usedProxy" component={UsedProxy} />
+                            <PrivateRoute path="/users" component={UserList} />
+                            <PrivateRoute path="/blacklist" component={BlackList} />
+                            <PrivateRoute path="/userProxy/:id" component={UserProxy} />
+                            <PrivateRoute path="/" component={Home} />
                         </Switch>
                     </div>
                 </div>

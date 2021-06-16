@@ -20,7 +20,7 @@ class UserList extends Component {
                         items: response.data.data
                     });
                 } else {
-                    this.setState({ toastShow: true, alertDescription: response.status })
+                    this.setState({ toastShow: true, alertDescription: response.data.status })
                 }
             },
             error => {

@@ -51,13 +51,17 @@ class Home extends Component {
                 let tempArray = [];
                 let maxPrice = 0;
                 for (let i = 0; i < this.state.months.length; i++) {
-                    if (this.state.months[i] == response.data.data.price_list[tempCount].month) {
-                        if (parseInt(response.data.data.price_list[tempCount].amount) > parseInt(maxPrice))
-                            maxPrice = response.data.data.price_list[tempCount].amount;
-                        tempArray.push(parseFloat(response.data.data.price_list[tempCount].amount));
-                        tempCount++;
-                        if (tempCount >= response.data.data.price_list.length)
-                            break;
+                    if (response.data.data.price_list.length > 0) {
+                        if (this.state.months[i] == response.data.data.price_list[tempCount].month) {
+                            if (parseInt(response.data.data.price_list[tempCount].amount) > parseInt(maxPrice))
+                                maxPrice = response.data.data.price_list[tempCount].amount;
+                            tempArray.push(parseFloat(response.data.data.price_list[tempCount].amount));
+                            tempCount++;
+                            if (tempCount >= response.data.data.price_list.length)
+                                break;
+                        } else {
+                            tempArray.push(0);
+                        }
                     } else {
                         tempArray.push(0);
                     }

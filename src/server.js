@@ -8,7 +8,7 @@ var corsOptions = {
     origin: "http://localhost:4000"
 };
 
-app.use(cors(corsOptions));
+app.use(cors());
 
 // parse requests of content-type - application/json
 app.use(bodyParser.json());
@@ -21,12 +21,15 @@ app.get("/", (req, res) => {
     res.json({ message: "Welcome to application." });
 });
 
+app.get('*', (res, req) => {
+    res.send(express.static(path.join(__dirname, '../client/src/App.js')));
+});
 // routes
 require('./app/routes/auth.routes')(app);
 require('./app/routes/user.routes')(app);
 
 // set port, listen for requests
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}.`);
 });
